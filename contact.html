@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corporate Solutions</title>
+    <link rel="stylesheet" href="./contact.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <a href="./index.html">
+          <img src="logo.webp" alt="" />
+        </a>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="./index.html">Home</a></li>
+          <li><a href="./about.html" class="active-page">About</a></li>
+          <li><a href="./services.html">Services</a></li>
+          <li><a href="./blog.html">Blog</a></li>
+          <li><a href="./contact.html">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="div">
+        <div class="div">
+          <a href="./signup.html">
+            <button class="btn">Signup</button>
+          </a>
+        </div>
+        <div class="menu-icon" id="menu-trigger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="logo">
+          <a href="./index.html">
+            <img src="logo.webp" alt="" />
+          </a>
+        </div>
+
+        <div class="close-icon" id="close-trigger">&times;</div>
+      </div>
+      <ul class="side-links">
+        <li class="side-item">
+          <a href="./index.html">Home</a>
+        </li>
+        <li class="side-item"><a href="./about.html">About</a></li>
+        <li class="side-item"><a href="./services.html">Services</a></li>
+        <li class="side-item"><a href="./blog.html">Blog</a></li>
+        <li class="side-item"><a href="./contact.html">Contact</a></li>
+        <li class="side-item"><a href="./signup.html">Signup</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <a href="./404.html">
+          <button class="side-log-btn">Open An Account</button>
+        </a>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <section class="contact-hero">
+      <div class="terminal-container">
+        <div class="terminal-left">
+          <div class="status-indicator">
+            <span class="pulse-dot"></span> SECURE Solutions
+          </div>
+          <h1 class="terminal-title">
+            Let’s Stackly Make Your Life <span class="blue-text">Skills Future</span>
+          </h1>
+          <p class="terminal-desc">
+           We are a leading technology company dedicated to delivering innovative digital solutions that help businesses grow and succeed.
+          </p>
+
+          <div class="location-nodes">
+            <div class="node">
+              <img
+                src="./data.webp"
+                alt="Mumbai"
+              />
+              <div class="node-info">
+                <strong>Mumbai Hub</strong>
+                <span>10+ Companies</span>
+              </div>
+            </div>
+            <div class="node">
+              <img
+                src="./development2.webp"
+                alt="London"
+              />
+              <div class="node-info">
+                <strong>London Office</strong>
+                <span>Canary Wharf, E14</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-right">
+          <div class="form-glass">
+            <div class="form-header">
+              <h3>Enquiry Us</h3>
+              <p>Always Active</p>
+            </div>
+
+            <form
+              id="contactForm"
+              onsubmit="handleInquiry(event)"
+              action="./404.html"
+            >
+              <div class="input-group">
+                <input 
+                  type="text" 
+                  placeholder="Full Name" 
+                  required 
+                  pattern="[A-Za-z\s]+" 
+                  title="Full Name can only contain letters and spaces."
+                />
+                <div class="input-glow"></div>
+              </div>
+              <div class="input-group">
+                <input 
+                  type="email" 
+                  placeholder="Email" 
+                  required 
+                  pattern="[a-zA-Z0-9._%+-]+@gmail\.com$"
+                  title="Please enter a valid Gmail address ending with @gmail.com"
+                />
+                <div class="input-glow"></div>
+              </div>
+              <div class="input-group">
+                <select required>
+                  <option value="" disabled selected>Select Course</option>
+                  <option value="invest">Cyber Security</option>
+                  <option value="loans">Web Development</option>
+                  <option value="wealth">Data Analytics</option>
+                </select>
+              </div>
+              <textarea
+                placeholder="Message / Strategy Requirements"
+                rows="4"
+              ></textarea>
+              <br>
+              <br>
+
+              <button type="submit" class="btn-terminal">
+                <span>Send Message</span>
+                <i class="fa-solid fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="support-terminal">
+      <div class="container">
+        <div class="terminal-header">
+          <div class="header-badge">
+            <span class="badge-line"></span> CONNECT TO NODE
+          </div>
+          <h2 class="hero-title">
+            Live <span class="blue-text">Support Channels</span>
+          </h2>
+          <p class="hero-subtitle">
+            Average Response Time: <span class="highlight">11 Seconds</span>.
+            Corporate solutions.
+          </p>
+        </div>
+
+        <div class="support-grid">
+          <div
+            class="icon-card"
+            id="call-node"
+            onmouseenter="activateNode(this)"
+            onmouseleave="deactivateNode(this)"
+          >
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="icon-box">
+                <i class="fa-solid fa-phone-volume"></i>
+              </div>
+              <span class="status-dot"></span> Active
+            </div>
+            <div class="card-body">
+              <h3>Call Support</h3>
+              <p>
+                Direct line to institutional advisors. 24/7 priority routing.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="./404.html">
+              <button class="btn-dispatch">
+                Initialize Call <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="icon-card featured"
+            id="chat-node"
+            onmouseenter="activateNode(this)"
+            onmouseleave="deactivateNode(this)"
+          >
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="icon-box">
+                <i class="fa-solid fa-comments"></i>
+              </div>
+              <span class="status-dot pulsing"></span> Live
+            </div>
+            <div class="card-body">
+              <h3>Live Chat</h3>
+              <p>
+                Instant secure messaging with our algorithmic support matrix.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="./404.html">
+              <button class="btn-dispatch">
+                Initialize Chat <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="icon-card"
+            id="email-node"
+            onmouseenter="activateNode(this)"
+            onmouseleave="deactivateNode(this)"
+          >
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="icon-box">
+                <i class="fa-solid fa-envelope-open-text"></i>
+              </div>
+              <span class="status-dot"></span> Queued
+            </div>
+            <div class="card-body">
+              <h3>Email</h3>
+              <p>
+                Asynchronous strategy inquiries and formal documentation
+                submission.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a href="./404.html">
+              <button class="btn-dispatch">
+                Send Dispatch <i class="fa-solid fa-chevron-right"></i>
+              </button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="office-locations">
+      <div class="container">
+        <div class="terminal-header">
+          <div class="header-badge">
+            <span class="badge-line"></span> OPERATIONAL NODES
+          </div>
+          <h2 class="hero-title">
+            Our <span class="blue-text">Corporate Hubs</span>
+          </h2>
+        </div>
+
+        <div class="location-grid">
+          <div class="location-card">
+            <div class="node-map-icon">
+              <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <div class="node-content">
+              <span class="node-tag">SOUTH HUB</span>
+              <h3>Chennai</h3>
+              <p>
+                Salem, TamilNadu
+              </p>
+              <div class="node-meta">
+                <span>COORD: 13.0827° N</span>
+                <span>STATUS: <span class="online">ONLINE</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-card">
+            <div class="node-map-icon">
+              <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <div class="node-content">
+              <span class="node-tag">HEADQUARTERS</span>
+              <h3>Bengaluru</h3>
+              <p>
+                Yellenahalli, Begur.
+              </p>
+              <div class="node-meta">
+                <span>COORD: 19.0760° N</span>
+                <span>STATUS: <span class="online">ONLINE</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-card">
+            <div class="node-map-icon">
+              <i class="fa-solid fa-location-crosshairs"></i>
+            </div>
+            <div class="node-content">
+              <span class="node-tag">TECH CORE</span>
+              <h3>Hyderabad</h3>
+              <p>
+                Indiranagar, Juble Hills.
+              </p>
+              <div class="node-meta">
+                <span>COORD: 12.9716° N</span>
+                <span>STATUS: <span class="online">ONLINE</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<footer class="premium-footer">
+  <div class="footer-upper">
+    <div class="footer-col brand-col">
+      <div class="logo footer-logo">
+        <a href="./index.html">
+          <img src="logo.webp" alt="NovaBank Logo" />
+        </a>
+      </div>
+      <p class="brand-brief">
+        Comprehensive IT support, monitoring & digital solution maintenance ensure for more smooth operating performance thresholds across global corporate node platforms.
+      </p>
+      <div class="footer-socials">
+        <a><i class="fa-brands fa-linkedin-in"></i></a>
+        <a><i class="fa-brands fa-x-twitter"></i></a>
+        <a><i class="fa-brands fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="./about.html">About </a></li>
+        <li><a href="./services.html">Services</a></li>
+        <li><a href="./blog.html">Blog</a></li>
+        <li><a href="./contact.html">Contact</a></li>
+        <li><a href="./login.html">Login</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4 class="footer-title">Corporate Services</h4>
+      <ul class="footer-links">
+        <li><a href="./404.html">Cyber Security</a></li>
+        <li><a href="./404.html">Business Solutions</a></li>
+        <li><a href="./404.html">UI/UX designs</a></li>
+        <li><a href="./404.html">Web Development</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col contact-col">
+      <h4 class="footer-title">Stay Connected</h4>
+      <p class="small-text">Subscribe for Stackly Corporate Solutions.</p>
+      
+      <form class="footer-subscribe" action="./error.html" method="GET">
+        <input 
+          type="email" 
+          placeholder="Email Address" 
+          required 
+          pattern="[a-zA-Z0-9._%+-]+@gmail\.com$" 
+          title="Please enter a valid Gmail address ending with @gmail.com"
+        />
+        <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+      
+      <div class="contact-info">
+        <span><i class="fa-solid fa-phone"></i>+912345678</span>
+        <span><i class="fa-solid fa-envelope"></i>support@stackly.com</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-container">
+      <div class="divider-line"></div>
+      <div class="bottom-flex">
+        <p class="copyright">
+          &copy; 2026 Stackly-Corporate Solutions. All Rights Reserved.
+        </p>
+        <div class="legal-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+    <script src="./script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  </body>
+</html>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    gsap.from(".footer-col", {
+      scrollTrigger: {
+        trigger: ".premium-footer",
+        start: "top 90%",
+      },
+      opacity: 0,
+      y: 40,
+      stagger: 0.15,
+      duration: 1,
+      ease: "power2.out",
+    });
+
+    gsap.from(".divider-line", {
+      scrollTrigger: ".footer-bottom",
+      opacity: 0,
+      duration: 2,
+      ease: "power4.inOut",
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tl = gsap.timeline({
+      defaults: { ease: "power4.out", duration: 1.5 },
+    });
+
+    tl.to(".terminal-left", { opacity: 1, x: 0 }).to(
+      ".terminal-right",
+      { opacity: 1, x: 0 },
+      "-=1.2",
+    );
+
+    tl.from(
+      ".node",
+      {
+        opacity: 0,
+        y: 20,
+        stagger: 0.2,
+        duration: 0.8,
+      },
+      "-=1",
+    );
+
+    const btn = document.querySelector(".btn-terminal");
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      gsap.to(btn, { x: x * 0.2, y: y * 0.2, duration: 0.3 });
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.5 });
+    });
+  });
+
+  // --- UPDATED FORM ACTION HANDLER ---
+  function handleInquiry(event) {
+    event.preventDefault(); // Capture baseline form process state
+    const btn = document.querySelector(".btn-terminal");
+
+    btn.innerHTML = "Initializing Protocol...";
+    gsap.to(btn, { backgroundColor: "#22c55e", duration: 0.4 });
+
+    // Transition smoothly into 404 target frame
+    setTimeout(() => {
+      window.location.href = "./error.html";
+    }, 1000);
+  }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".map-terminal",
+        start: "top 75%",
+      },
+    });
+
+    tl.from(".terminal-header", {
+      opacity: 0,
+      y: 30,
+      duration: 1,
+      ease: "power3.out",
+    }).to(
+      ".map-stage",
+      {
+        autoAlpha: 1,
+        duration: 1.2,
+        ease: "expo.out",
+      },
+      "-=0.6",
+    );
+
+    tl.from(
+      ".marker-icon",
+      {
+        y: -200,
+        opacity: 0,
+        duration: 1,
+        ease: "bounce.out",
+      },
+      "-=0.4",
+    );
+
+    gsap.to(".ring-1", {
+      width: 250,
+      height: 250,
+      opacity: 0,
+      duration: 2.5,
+      repeat: -1,
+      ease: "power2.out",
+      delay: 1,
+    });
+
+    gsap.to(".ring-2", {
+      width: 200,
+      height: 200,
+      opacity: 0,
+      duration: 2.5,
+      repeat: -1,
+      ease: "power2.out",
+      delay: 2.2,
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    gsap.to(".icon-card", {
+      scrollTrigger: {
+        trigger: ".support-grid",
+        start: "top 75%",
+      },
+      autoAlpha: 1,
+      y: 0,
+      stagger: 0.2,
+      duration: 1.2,
+      ease: "power4.out",
+    });
+  });
+
+  function activateNode(card) {
+    const icon = card.querySelector(".icon-box i");
+    gsap.to(card, { y: -10, duration: 0.4, ease: "power2.out" });
+    gsap.fromTo(icon, { y: 0 }, { y: -8, duration: 0.6, ease: "bounce.out" });
+  }
+
+  function deactivateNode(card) {
+    gsap.to(card, { y: 0, duration: 0.4 });
+    gsap.to(card.querySelector(".icon-box i"), { y: 0, duration: 0.3 });
+  }
+
+  
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    gsap.to(".location-card", {
+      scrollTrigger: {
+        trigger: ".location-grid",
+        start: "top 80%",
+      },
+      opacity: 1,
+      y: 0,
+      stagger: 0.2,
+      duration: 1.2,
+      ease: "power3.out",
+    });
+
+    const statsTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".contact-stats",
+        start: "top 80%",
+      },
+    });
+
+    statsTl.to(".stat-item", { opacity: 1, y: 0, stagger: 0.2, duration: 0.8 });
+
+    document.querySelectorAll(".stat-value").forEach((stat) => {
+      const target = +stat.getAttribute("data-target");
+      gsap.to(stat, {
+        innerText: target,
+        duration: 2.5,
+        snap: { innerText: 1 },
+        ease: "expo.out",
+        onUpdate: function () {
+          if (target === 98) stat.innerHTML = Math.ceil(this.targets()[0].innerText) + "%";
+          if (target === 2) stat.innerHTML = "< " + Math.ceil(this.targets()[0].innerText) + " MIN";
+          if (target === 24) stat.innerHTML = Math.ceil(this.targets()[0].innerText) + "/7";
+        },
+      });
+    });
+  });
+</script>

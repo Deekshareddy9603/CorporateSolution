@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Enterprise Control Panel</title>
+    <!-- Font Awesome Icons & Chart.js for beautiful analytics charts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           ROOT VARIABLES & RESET (Matching original theme preferences)
+           ========================================================================== */
+        :root {
+            --sidebar-bg: #1e1e2f;
+            --main-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --orange:  rgb(32, 146, 192);
+            --sky: #065458;
+            --border-color: #e2e8f0;
+            --success: #2ed573;
+            --warning: #ffa502;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--main-bg);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           MAIN LAYOUT CORES
+           ========================================================================== */
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* --- SIDEBAR PANEL --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .sidebar-top {
+            width: 100%;
+        }
+
+        .brand {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .brand i {
+            font-size: 24px;
+            color: var(--orange);
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sidebar Tabs */
+        .menu-list {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--orange);
+        }
+
+        .badge {
+            background: var(--orange);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* User Profile & Logout Box Footer */
+        .sidebar-user-box {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            overflow: hidden;
+        }
+
+        .user-details h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-details p {
+            font-size: 11px;
+            color: #a0aec0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logout-btn {
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+        }
+
+        .logout-btn:hover {
+            color: var(--orange);
+        }
+
+        /* --- MAIN PANELS VIEW window --- */
+        .main-content {
+            flex-grow: 1;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar Header */
+        .top-header {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            background: #f7fafc;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Dynamic view wrapper section */
+        .content-body {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        /* ==========================================================================
+           DYNAMIC MAIN CONTENT VIEWS
+           ========================================================================== */
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-heading {
+            margin-bottom: 25px;
+        }
+
+        .panel-heading h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .panel-heading p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* --- REUSABLE GRID METRIC CARDS --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .card-info h3 {
+            font-size: 28px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .card-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* --- VISUAL GRAPH CHART WRAPPERS --- */
+        .chart-box-container {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .chart-box-container h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            height: 260px;
+            width: 100%;
+        }
+
+        /* --- DATA TABLES LAYOUT --- */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header-bar {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 14px 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pill.active { background: #e3fcef; color: #00875a; }
+        .status-pill.pending { background: #fff0b3; color: #947200; }
+
+        .split-media-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .media-text-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .media-graphic {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            min-height: 220px;
+            background: linear-gradient(135deg, rgba(30,30,47,0.05) 0%, rgba(255,91,46,0.05) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE MOBILE BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 991px) {
+            .split-media-box { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .top-header { padding: 15px 20px; }
+            .mobile-toggle { display: block; }
+            .search-wrapper { max-width: 200px; }
+            .sidebar { position: absolute; left: -260px; top: 0; bottom: 0; height: 100vh; }
+            .sidebar.open { left: 0; }
+            .content-body { padding: 20px; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebarPanel">
+            <div class="sidebar-top">
+                <div class="brand">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>Admin Panel</span>
+                </div>
+                
+                <ul class="menu-list">
+                    <li class="menu-item active" onclick="switchTab('insights', this)">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Market Insights</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('infrastructure', this)">
+                        <i class="fa-solid fa-server"></i>
+                        <span>Manage Infrastructure</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('clients', this)">
+                        <i class="fa-solid fa-cubes"></i>
+                        <span>Corporate Clients</span>
+                        <span class="badge">12</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('security', this)">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Security Officers</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Profile Info Footer -->
+            <div class="sidebar-user-box">
+                <div class="user-info">
+                    <div class="user-avatar" id="avatarLetter">U</div>
+                    <div class="user-details">
+                        <h4 id="profileName">User Name</h4>
+                        <p id="profileEmail">user@email.com</p>
+                    </div>
+                </div>
+                <!-- Immediate Logout trigger -->
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTAINER WINDOW -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="mobile-toggle" onclick="toggleMobileSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search systems...">
+                </div>
+            </header>
+
+            <div class="content-body">
+                
+                <!-- SECTION 1: MARKET INSIGHTS -->
+                <div id="panel-insights" class="view-panel active-panel">
+                    <div class="panel-heading">
+                        <h1>IT Sector Insights</h1>
+                        <p>Real-time server telemetry and scaling performance analysis metrics.</p>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="card">
+                            <div class="card-info"><p>Global Cloud Scale</p><h3>$512.4K</h3></div>
+                            <div class="card-icon-box" style="background:#e3efff;color:#0052cc;"><i class="fa-solid fa-cloud"></i></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-info"><p>Active Services</p><h3>892,140</h3></div>
+                            <div class="card-icon-box" style="background:#e6fcf5;color:#00875a;"><i class="fa-solid fa-network-wired"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Sector Graphical Chart Component -->
+                    <div class="chart-box-container">
+                        <h3>Bandwidth Operations Peak Telemetry</h3>
+                        <div class="canvas-wrapper">
+                            <canvas id="insightsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: INFRASTRUCTURE -->
+                <div id="panel-infrastructure" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>Infrastructure Management</h1>
+                        <p>Configure compute engines, physical node allocations, and regions.</p>
+                    </div>
+
+                    <div class="chart-box-container">
+                        <h3>Node Memory System Load Allocation</h3>
+                        <div class="canvas-wrapper">
+                            <canvas id="infraChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Node Instance</th><th>Region Branch</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Apex Global Node</strong></td><td>New York Region</td><td><span class="status-pill active">Online</span></td></tr>
+                                <tr><td><strong>Vanguard Core</strong></td><td>London Datacenter</td><td><span class="status-pill pending">Pending</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: CORPORATE CLIENTS -->
+                <div id="panel-clients" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>Corporate Clients</h1>
+                        <p>Overview of cloud client platform seats allocation trends.</p>
+                    </div>
+
+                    <div class="split-media-box">
+                        <div class="chart-box-container">
+                            <h3>Client Subscription Share</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="clientChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="media-graphic">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80" class="image-placeholder" alt="Analytics Graphic">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 4: SECURITY -->
+                <div id="panel-security" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>Security Operations</h1>
+                        <p>System penetration metrics and active perimeter shield configurations.</p>
+                    </div>
+
+                    <div class="split-media-box">
+                        <div class="media-graphic">
+                            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=500&q=80" class="image-placeholder" alt="Cyber Security Graphic">
+                        </div>
+                        <div class="chart-box-container">
+                            <h3>Thwarted Security Incidents (Daily)</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="securityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- SCRIPT LOGIC CONTROLLERS -->
+    <script>
+        // Extract inputs automatically from Login memory values
+    window.addEventListener('DOMContentLoaded', () => {
+        // FIXED: Changed these keys to match your login/signup page exactly!
+        const savedName = localStorage.getItem('currentUser') || "Tech Administrator";
+        const savedEmail = localStorage.getItem('currentUserEmail') || "admin@techstack.com";
+
+        // Update user details elements inside HTML sidebar
+        document.getElementById('profileName').innerText = savedName;
+        document.getElementById('profileEmail').innerText = savedEmail;
+        document.getElementById('avatarLetter').innerText = savedName.trim().charAt(0).toUpperCase();
+
+        // Initialize graphs
+        initCharts();
+    });
+
+    function toggleMobileSidebar() {
+        document.getElementById('sidebarPanel').classList.toggle('open');
+    }
+
+    function switchTab(panelId, menuElement) {
+        document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active-panel'));
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+        document.getElementById(`panel-${panelId}`).classList.add('active-panel');
+        menuElement.classList.add('active');
+
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebarPanel').classList.remove('open');
+        }
+    }
+
+    // Silent logout redirection logic without confirmation notifications
+    function handleLogout() {
+        // Clear local memory when leaving so it resets cleanly
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUserEmail');
+        window.location.href = 'index.html';
+    }
+
+    // ==========================================================================
+    // INITIALIZE CHART GRAPH OBJECT DATA
+    // ==========================================================================
+    function initCharts() {
+        // 1. Insights Line Chart
+        new Chart(document.getElementById('insightsChart'), {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                datasets: [{
+                    label: 'Network Load (Gbps)',
+                    data: [20, 45, 28, 80, 65, 95],
+                    borderColor: '#ff5b2e',
+                    backgroundColor: 'rgba(255, 91, 46, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 2. Infrastructure Bar Chart
+        new Chart(document.getElementById('infraChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Node Alpha', 'Node Beta', 'Node Gamma', 'Node Delta'],
+                datasets: [{
+                    label: 'CPU Usage (%)',
+                    data: [42, 85, 56, 30],
+                    backgroundColor: '#065458'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 3. Clients Doughnut Chart
+        new Chart(document.getElementById('clientChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['SaaS Enterprise', 'Gov Sectors', 'Startup Tiers'],
+                datasets: [{
+                    data: [55, 25, 20],
+                    backgroundColor: ['#ff5b2e', '#065458', '#ffd1c5']
+                    }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // 4. Security Polar Area Chart
+        new Chart(document.getElementById('securityChart'), {
+            type: 'polarArea',
+            data: {
+                labels: ['DDoS Mitigated', 'Auth Brute-force', 'XSS Intercepted'],
+                datasets: [{
+                    data: [120, 340, 90],
+                    backgroundColor: ['rgba(255,91,46,0.7)', 'rgba(6,84,88,0.7)', 'rgba(46,213,115,0.7)']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+    </script>
+</body>
+</html>

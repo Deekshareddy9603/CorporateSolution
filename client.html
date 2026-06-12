@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Workspace Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* ==========================================================================
+           ROOT VARIABLES & RESET (Matching original theme preferences)
+           ========================================================================== */
+        :root {
+            --sidebar-bg: #1e1e2f;
+            --main-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --orange:  rgb(32, 146, 192);
+            --sky:  rgb(32, 146, 192);
+            --border-color: #e2e8f0;
+            --success: #2ed573;
+            --warning:  rgb(32, 146, 192);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--main-bg);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ==========================================================================
+           MAIN LAYOUT CORES
+           ========================================================================== */
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* --- SIDEBAR PANEL --- */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .sidebar-top {
+            width: 100%;
+        }
+
+        .brand {
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .brand i {
+            font-size: 24px;
+            color: var(--orange);
+        }
+
+        .brand span {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sidebar Tabs */
+        .menu-list {
+            list-style: none;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .menu-item i {
+            font-size: 18px;
+            width: 24px;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--orange);
+        }
+
+        .badge {
+            background: var(--sky);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        /* User Profile & Logout Box Footer */
+        .sidebar-user-box {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 80%;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--sky);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .user-details {
+            overflow: hidden;
+        }
+
+        .user-details h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-details p {
+            font-size: 11px;
+            color: #a0aec0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .logout-btn {
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+        }
+
+        .logout-btn:hover {
+            color: var(--orange);
+        }
+
+        /* --- MAIN PANELS VIEW window --- */
+        .main-content {
+            flex-grow: 1;
+            height: 100%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar Header */
+        .top-header {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .search-wrapper {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            background: #f7fafc;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Dynamic view wrapper section */
+        .content-body {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        /* ==========================================================================
+           DYNAMIC MAIN CONTENT VIEWS
+           ========================================================================== */
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .view-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-heading {
+            margin-bottom: 25px;
+        }
+
+        .panel-heading h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .panel-heading p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* --- REUSABLE GRID METRIC CARDS --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-info p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .card-info h3 {
+            font-size: 28px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .card-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* --- VISUAL GRAPH CHART WRAPPERS --- */
+        .chart-box-container {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .chart-box-container h3 {
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            height: 260px;
+            width: 100%;
+        }
+
+        /* --- DATA TABLES LAYOUT --- */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .table-header-bar {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f7fafc;
+            padding: 14px 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-pill.active { background: #e3fcef; color:  rgb(32, 146, 192); }
+        .status-pill.pending { background: #fff0b3; color:  rgb(32, 146, 192);}
+
+        .split-media-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .media-text-content {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .media-text-content h3 {
+            margin-bottom: 12px;
+        }
+
+        .media-text-content p {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .media-graphic {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE MOBILE BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 991px) {
+            .split-media-box { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .top-header { padding: 15px 20px; }
+            .mobile-toggle { display: block; }
+            .search-wrapper { max-width: 200px; }
+            .sidebar { position: absolute; left: -260px; top: 0; bottom: 0; height: 100vh; }
+            .sidebar.open { left: 0; }
+            .content-body { padding: 20px; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebarPanel">
+            <div class="sidebar-top">
+                <div class="brand">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Client Portal</span>
+                </div>
+                
+                <ul class="menu-list">
+                    <li class="menu-item active" onclick="switchTab('projects', this)">
+                        <i class="fa-solid fa-diagram-project"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('usage', this)">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>API & Resource Usage</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('billing', this)">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Invoices & Billing</span>
+                    </li>
+                    <li class="menu-item" onclick="switchTab('support', this)">
+                        <i class="fa-solid fa-headset"></i>
+                        <span>Helpdesk Support</span>
+                        <span class="badge">1 Active</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-user-box">
+                <div class="user-info">
+                    <div class="user-avatar" id="avatarLetter">C</div>
+                    <div class="user-details">
+                        <h4 id="profileName">Client Name</h4>
+                        <p id="profileEmail">client@email.com</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-header">
+                <div class="mobile-toggle" onclick="toggleMobileSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search invoices, tokens, tickets...">
+                </div>
+            </header>
+
+            <div class="content-body">
+                
+                <div id="panel-projects" class="view-panel active-panel">
+                    <div class="panel-heading">
+                        <h1>Project Environments</h1>
+                        <p>Track your contract applications, deployment progress, and environment updates.</p>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="card">
+                            <div class="card-info"><p>Active Apps</p><h3>3 Production</h3></div>
+                            <div class="card-icon-box" style="background:#e3efff;color:#0052cc;"><i class="fa-solid fa-laptop-file"></i></div>
+                        </div>
+                        <div class="card">
+                            <div class="card-info"><p>Milestones Passed</p><h3>8 / 10</h3></div>
+                            <div class="card-icon-box" style="background:#e6fcf5;color:#00875a;"><i class="fa-solid fa-circle-check"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="split-media-box">
+                        <div class="media-text-content">
+                            <h3>Application Delivery Statement</h3>
+                            <p>Your main e-commerce platform environment is performing optimal operational loops. The development team successfully applied the patch upgrade v2.4.1 early this morning.</p>
+                            <br>
+                            <p>The staging sandbox area is fully prepared for your user acceptance test sequences scheduled for later this Friday.</p>
+                        </div>
+                        <div class="media-graphic">
+                            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=500&q=80" class="image-placeholder" alt="Team Work Image">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-usage" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>API Metric Analysis</h1>
+                        <p>View cloud bandwidth load thresholds and live data gateway processing numbers.</p>
+                    </div>
+
+                    <div class="chart-box-container">
+                        <h3>API Requests Volume Gateway Load</h3>
+                        <div class="canvas-wrapper">
+                            <canvas id="usageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-billing" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>Invoices & Statements</h1>
+                        <p>Review current accounting cycles, plan limits, and transparent itemized statements.</p>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Statement ID</th><th>Due Date</th><th>Amount</th><th>Status</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>#INV-2026-004</strong></td><td>June 30, 2026</td><td>$1,250.00</td><td><span class="status-pill pending">Pending</span></td></tr>
+                                <tr><td><strong>#INV-2026-003</strong></td><td>May 31, 2026</td><td>$1,250.00</td><td><span class="status-pill active">Settled</span></td></tr>
+                                <tr><td><strong>#INV-2026-002</strong></td><td>April 30, 2026</td><td>$1,480.00</td><td><span class="status-pill active">Settled</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="panel-support" class="view-panel">
+                    <div class="panel-heading">
+                        <h1>Technical Support Tickets</h1>
+                        <p>Open new inquiries or dialogue directly with your assigned systems engineers.</p>
+                    </div>
+
+                    <div class="split-media-box">
+                        <div class="chart-box-container">
+                            <h3>Resolution Times Framework (Hours)</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="supportChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="media-text-content">
+                            <h3>Dedicated SLA Status</h3>
+                            <p>Your subscription tier guarantees a response time of less than 2 hours for critical server events.</p>
+                            <br>
+                            <p><strong>Active Ticket:</strong> #TK-9921 — Requesting custom SSL certification upload guidelines for subdomains.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+       // Extract client details from local memory storage
+    window.addEventListener('DOMContentLoaded', () => {
+        // FIXED: Changed keys to match your login/signup page exactly!
+        const savedName = localStorage.getItem('currentUser') || "Enterprise Client";
+        const savedEmail = localStorage.getItem('currentUserEmail') || "client@domain.com";
+
+        document.getElementById('profileName').innerText = savedName;
+        document.getElementById('profileEmail').innerText = savedEmail;
+        document.getElementById('avatarLetter').innerText = savedName.trim().charAt(0).toUpperCase();
+
+        // Run Chart generation loop
+        initClientCharts();
+    });
+
+    function toggleMobileSidebar() {
+        document.getElementById('sidebarPanel').classList.toggle('open');
+    }
+
+    function switchTab(panelId, menuElement) {
+        document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active-panel'));
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+        document.getElementById(`panel-${panelId}`).classList.add('active-panel');
+        menuElement.classList.add('active');
+
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebarPanel').classList.remove('open');
+        }
+    }
+
+    // Silent logout mechanism clearing storage data and routing back
+    function handleLogout() {
+        // Clear local memory when leaving so it resets cleanly for the next user
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUserEmail');
+        window.location.href = 'index.html';
+    }
+
+    // ==========================================================================
+    // CHART DATA SETS (Client View Specific)
+    // ==========================================================================
+    function initClientCharts() {
+        // Usage Statistics Graph (Line layout)
+        new Chart(document.getElementById('usageChart'), {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Successful Access Calls',
+                    data: [12000, 19000, 15000, 25000, 22000, 9000, 11000],
+                    borderColor: '#065458',
+                    backgroundColor: 'rgba(6, 84, 88, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Support Operations Resolution Speed Metrics (Bar graph)
+        new Chart(document.getElementById('supportChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Q1 Priority', 'Q2 Priority', 'General Tier'],
+                datasets: [{
+                    label: 'Response Time (Mins)',
+                    data: [15, 40, 95],
+                    backgroundColor: '#ff5b2e'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+    </script>
+</body>
+</html>

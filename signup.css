@@ -1,0 +1,322 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+:root {
+    --violet: rgb(78, 43, 73);
+    --orange:  rgb(32, 146, 192);
+    --sky: rgb(6, 84, 88);
+    --white: rgb(250, 250, 250);
+    --black: rgb(38, 38, 38);
+}
+
+/* BODY BACKGROUND */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--violet);
+    padding: 30px 20px;
+    overflow-y: auto; /* Clean page scrolling instead of cramped box scrolling */
+    
+}
+
+/* Floating bubbles */
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: var(--white);
+    opacity: 0.05;
+    animation: float 12s infinite alternate ease-in-out;
+    pointer-events: none;
+}
+
+body::before {
+    width: 250px;
+    height: 250px;
+    top: -100px;
+    left: -100px;
+}
+
+body::after {
+    width: 300px;
+    height: 300px;
+    bottom: -120px;
+    right: -120px;
+}
+
+@keyframes float {
+    from { transform: translateY(0); }
+    to { transform: translateY(40px); }
+}
+
+/* CONTAINER */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    min-height: 680px; /* Let it scale dynamically instead of freezing at a strict height */
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* LEFT PANEL (The Dark Form Box) */
+.left {
+    width: 50%;
+    background: var(--black);
+    border-radius: 20px;
+    padding: 30px; /* Reduced slightly to give form inputs maximum breathing room */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-box {
+    width: 100%;
+    max-width: 350px;
+}
+
+/* COMMON TEXT FIXES (De-congests the top header area) */
+.common-text {
+    text-align: center;
+    margin-bottom: 15px; /* Tighter margin so form elements can sit higher */
+}
+
+.common-text h2 {
+    color: var(--orange);
+    font-size: 32px; /* Scaled down slightly from 40px so it feels less aggressive */
+    margin-bottom: 5px;
+}
+
+.common-text p {
+    color: var(--white);
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+/* FORM ELEMENTS */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    color: var(--white);
+    margin: 8px 0 4px; /* Optimized spacing to keep elements compact but readable */
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+}
+
+/* Inputs & Dropdowns */
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 11px 40px; /* Perfectly balanced internal text padding */
+    border-radius: 8px;
+    border: 1px solid transparent;
+    outline: none;
+    font-size: 14px;
+    background-color: var(--white);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+/* Placeholder adjustments for consistency */
+.input-group input::placeholder {
+    color: #999;
+}
+
+/* Custom Dropdown Arrow Fixes */
+.input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+/* Left side prefix icons */
+.input-group i:not(.toggle-password) {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--orange);
+    z-index: 5;
+    pointer-events: none;
+    font-size: 14px;
+}
+
+/* Eye Toggle Icon Styling alignment fix */
+.toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777777;
+    z-index: 10;
+    font-size: 14px;
+    padding: 5px; /* Increases clickable tap target zone */
+    transition: color 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: var(--orange);
+}
+
+/* SUBMIT BUTTON */
+button {
+    margin-top: 18px;
+    padding: 12px;
+    background: var(--orange);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: background 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background: var(--sky);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* BOTOM TEXT LINKS */
+.switch,
+.forgot {
+    color: var(--orange);
+    margin-top: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.switch:hover,
+.forgot:hover {
+    color:  rgb(32, 146, 192);
+    text-decoration: underline;
+}
+
+/* Home Navigation Link Button styling */
+.btn-home-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+
+.btn-home-link:hover {
+    opacity: 1;
+    color: var(--orange);
+}
+
+.error {
+    color:  rgb(32, 146, 192);
+    font-size: 12px;
+    margin-top: 4px;
+    text-align: center;
+}
+
+/* RIGHT SPLIT PANEL (Image Wrapper) */
+.right {
+    width: 50%;
+    border-radius: 20px;
+    background: url("./analytics.webp") center/cover no-repeat;
+    position: relative;
+    overflow: hidden;
+}
+
+.right::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(38, 38, 38, 0.85);
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--white);
+    z-index: 2;
+    width: 100%;
+    padding: 30px;
+}
+
+.overlay-content h2 {
+    margin-bottom: 15px;
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.overlay-content p {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Hide inactive panels */
+.signup,
+.forgot-section {
+    display: none;
+}
+
+/* ==========================================================
+   PERFECT RESPONSIVE MOBILE & TABLET LAYOUT BREAKPOINT
+   ========================================================== */
+@media (max-width: 850px) {
+    .container {
+        flex-direction: column; /* Stack the forms vertically on smaller devices */
+        height: auto;
+        min-height: auto;
+    }
+
+    .left,
+    .right {
+        width: 100%;
+        height: auto;
+    }
+
+    .left {
+        padding: 40px 20px; /* Comfortable mobile padding alignment */
+    }
+
+    /* Completely hide or scale down the banner overlay on phones to prioritize entry form */
+    .right {
+        min-height: 200px;
+    }
+
+    .overlay-content {
+        padding: 20px;
+    }
+
+    .overlay-content h2 {
+        font-size: 22px;
+    }
+}

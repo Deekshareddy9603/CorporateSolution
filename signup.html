@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Authentication</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="./logo.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="signup.css">
+
+    <style>
+        /* ==========================================================================
+           BRAND LOGO STYLING WITH INTERACTIVE HOVER GLOW
+           ========================================================================== */
+        .form-logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-logo {
+            width: 140px;
+            display: inline-block;
+            transition: all 0.3s ease-in-out;
+            border-radius: 8px;
+            
+            /* Clean orange color state filter by default */
+            filter: drop-shadow(0px 0px 0px transparent);
+        }
+
+        /* Hover State: Changes to solid blue blur/glow with no background jumping */
+        .form-logo:hover {
+            transform: scale(1) !important; 
+            filter: drop-shadow(0 0 12px rgba(0, 123, 255, 0.85)) !important;
+        }
+
+        /* Embedded layout style adjustments to support your inputs */
+        .input-group select {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            background: transparent;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 16px;
+            color: inherit;
+            border-radius: 4px;
+            appearance: none; /* Removes native arrow */
+            -webkit-appearance: none;
+        }
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .input-group i.fa-eye, .input-group i.fa-eye-slash {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        /* Pushes Forgot Password to the far right */
+        .forgot-container {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin-top: -5px;
+            margin-bottom: 20px;
+        }
+        .forgot {
+            cursor: pointer;
+            color:  rgb(32, 146, 192);
+            font-weight: 600;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .forgot:hover {
+            color:  rgb(32, 146, 192);
+        }
+
+        /* The self-contained alert box inside your form container */
+        .error {
+            color:  rgb(32, 146, 192);
+            background-color: #ffebee;
+            border-left: 4px solid  rgb(32, 146, 192);
+            padding: 12px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 4px;
+            margin: 15px 0;
+            text-align: left;
+            line-height: 1.5;
+            display: none; /* Hidden by default */
+        }
+
+        /* Instantly reveals the alert box when text content is injected */
+        .error:not(:empty) {
+            display: block !important;
+        }
+
+        /* Password requirements description text */
+        .password-hint {
+            font-size: 12px;
+            color: #777;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .btn-home-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color:  rgb(32, 146, 192);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        .btn-home-link:hover {
+            color:  rgb(32, 146, 192);
+        }
+
+        /* State management classes to show/hide sections cleanly */
+        .signup, .forgot-section {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left" data-aos="fade-up">
+
+            <div class="form-box">
+                
+                <!-- NEW LOGO CONTAINER LINKED TO HOME PAGE -->
+                <div class="form-logo-container">
+                    <a href="index.html">
+                        <img src="./logo.webp" alt="IT Solutions Logo" class="form-logo">
+                    </a>
+                </div>
+
+                <div class="common-text">
+                    <h2 id="formHeading">Welcome Back!</h2>
+                    <p id="formSubheading">Please login or create an account to continue</p>
+                </div>
+
+                <div class="login" id="loginSection">
+                    <form id="loginForm">
+
+                        <label>Role</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <select id="loginRole" required>
+                                <option value="" disabled selected>Select your role</option>
+                                <option value="admin">Admin</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
+
+                        <label>Email Address</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="username@gmail.com" 
+                                   pattern="[a-zA-Z0-9._%+-]+@gmail\.com$" 
+                                   title="Only @gmail.com accounts are allowed." required>
+                        </div>
+
+                        <label>Password</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="loginPassword" class="password-field" placeholder="Enter password" 
+                                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}" required> 
+                            <i class="fa-solid fa-eye toggle-password"></i>
+                        </div>
+                        <span class="password-hint"></span>
+
+                        <div class="forgot-container">
+                          <a href="./error.html">
+                            <div class="forgot" onclick="redirectTo404()">Forgot Password?</div>
+                          </a>
+                        </div>
+                        
+                        <div class="error" id="loginError"></div>
+
+                        <button type="submit">Login</button>
+                    </form>
+
+                    <div class="switch" onclick="showSignup()">Don't have an account? Sign Up</div>
+                    <a href="index.html" class="btn-home-link"><i class="fa-solid fa-house"></i> Go to Home Page</a>
+                </div>
+
+                <div class="signup" id="signupSection">
+                    <form id="signupForm">
+
+                        <label>Name</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="signupFirstName" placeholder="Enter first name" 
+                                   pattern="[A-Za-z]+" title="Only alphabets are allowed. No numbers or symbols." required>
+                        </div>
+
+                        <label>Last Name</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="signupLastName" placeholder="Enter last name" 
+                                   pattern="[A-Za-z]+" title="Only alphabets are allowed. No numbers or symbols." required>
+                        </div>
+
+                        <label>Role</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <select id="signupRole" required>
+                                <option value="" disabled selected>Select your role</option>
+                                <option value="admin">Admin</option>
+                                <option value="client">Client</option>
+                            </select>
+                        </div>
+
+                        <label>Email Address</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="signupEmail" placeholder="username@gmail.com" 
+                                   pattern="[a-zA-Z0-9._%+-]+@gmail\.com$" 
+                                   title="Only @gmail.com accounts are allowed." required>
+                        </div>
+
+                        <label>Password</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="signupPassword" class="password-field" placeholder="Create password" 
+                                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}" required> 
+                            <i class="fa-solid fa-eye toggle-password"></i>
+                        </div>
+                        <span class="password-hint"></span>
+
+                        <label>Confirm Password</label>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="signupConfirmPassword" class="password-field" placeholder="Confirm password" required> 
+                            <i class="fa-solid fa-eye toggle-password"></i>
+                        </div>
+
+                        <div class="error" id="signupError"></div>
+
+                        <button type="submit">Sign Up</button>
+                    </form>
+
+                    <div class="switch" onclick="showLogin()">Already have an account? Login</div>
+                    <a href="index.html" class="btn-home-link"><i class="fa-solid fa-house"></i> Go to Home Page</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="right" data-aos="fade-down">
+            <div class="overlay-content">
+                <h2 data-aos="zoom-in">Secure Software Authentication System</h2>
+                <p>Modern login & signup protection for your applications.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 900,
+            easing: 'ease-in-out',
+            once: true,
+        });
+
+        // Toggle Form Visibility
+        function showSignup() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('signupSection').style.display = 'block';
+            document.getElementById('formHeading').innerText = 'Create Account';
+            document.getElementById('formSubheading').innerText = 'Join us by filling out your information details';
+            
+            // Clean dynamic alert boxes on view switch
+            document.getElementById('signupError').innerText = "";
+            document.getElementById('loginError').innerText = "";
+        }
+
+        function showLogin() {
+            document.getElementById('signupSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('formHeading').innerText = 'Welcome Back!';
+            document.getElementById('formSubheading').innerText = 'Please login or create an account to continue';
+            
+            // Clean dynamic alert boxes on view switch
+            document.getElementById('loginError').innerText = "";
+            document.getElementById('signupError').innerText = "";
+        }
+
+        // Direct Forgot Password click handler to 404 error template
+        function redirectTo404() {
+            window.location.href = '404.html';
+        }
+
+        // Global Password Visibility Eye Toggle Handler
+        document.querySelectorAll('.toggle-password').forEach(toggleIcon => {
+            toggleIcon.addEventListener('click', function() {
+                const passwordInput = this.parentElement.querySelector('.password-field');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Login Routing & Form Constraints Validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.innerText = ""; // Clear active warnings inside the alert box
+
+            const userEmail = document.getElementById('loginEmail').value;
+            const selectedRole = document.getElementById('loginRole').value;
+            const password = document.getElementById('loginPassword').value;
+
+            // 1. Strict Email Match Rule
+            if (!userEmail.endsWith('@gmail.com')) {
+                e.preventDefault();
+                errorDiv.innerText = "Access Denied: Only valid @gmail.com email accounts can log in.";
+                return;
+            }
+
+            // 2. Strong Password Complexity Match Rule
+            const strongPasswordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}/;
+            if (!strongPasswordRegex.test(password)) {
+                e.preventDefault();
+                errorDiv.innerText = "Incorrect Pattern: Passwords must be 8+ characters with an uppercase letter, a lowercase letter, a number, and a special symbol.";
+                return;
+            }
+
+            if (!selectedRole) {
+                e.preventDefault();
+                errorDiv.innerText = "Please select an access control role level.";
+                return;
+            }
+
+            e.preventDefault();
+            localStorage.setItem('currentUserEmail', userEmail);
+
+            if (selectedRole === 'admin') {
+                window.location.href = './admin.html'; 
+            } else if (selectedRole === 'client') {
+                window.location.href = 'client.html'; 
+            }
+        });
+
+        // Signup Routing & Form Constraints Validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const errorDiv = document.getElementById('signupError');
+            errorDiv.innerText = ""; // Clear active warnings inside the alert box
+
+            const firstName = document.getElementById('signupFirstName').value;
+            const lastName = document.getElementById('signupLastName').value;
+            const userEmail = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            // 1. Check Name fields for Alphabets Only
+            const alphaRegex = /^[A-Za-z]+$/;
+            if (!alphaRegex.test(firstName) || !alphaRegex.test(lastName)) {
+                e.preventDefault();
+                errorDiv.innerText = "Invalid Name: First and Last name inputs can only contain alphabetical letters.";
+                return;
+            }
+
+            // 2. Strict Email Match Rule
+            if (!userEmail.endsWith('@gmail.com')) {
+                e.preventDefault();
+                errorDiv.innerText = "Access Denied: You must register with a valid @gmail.com email address.";
+                return;
+            }
+
+            // 3. Password Complexity Rule
+            const strongPasswordRegex = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}/;
+            if (!strongPasswordRegex.test(password)) {
+                e.preventDefault();
+                errorDiv.innerText = "Weak Password: Must be 8+ characters with 1 uppercase, 1 lowercase, 1 number, and 1 special symbol.";
+                return;
+            }
+
+            // 4. Verify Password Fields Match
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                errorDiv.innerText = "Verification mismatch: Password confirmation field does not match.";
+                return;
+            }
+
+            e.preventDefault();
+            
+            // Save verified information data records to storage memory
+            localStorage.setItem('currentUser', firstName);
+            localStorage.setItem('currentUserEmail', userEmail);
+
+            // Pop up notice alert, reset forms, and display the login interface container box
+            alert("Account verified and created successfully! Please log in.");
+            showLogin();
+            
+            document.getElementById('loginEmail').value = userEmail;
+            document.getElementById('signupForm').reset();
+        });
+    </script>
+</body>
+</html>
